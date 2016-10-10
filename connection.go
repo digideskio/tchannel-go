@@ -37,6 +37,8 @@ import (
 
 	"github.com/uber-go/atomic"
 	"golang.org/x/net/context"
+	"golang.org/x/net/ipv4"
+	"golang.org/x/net/ipv6"
 )
 
 // PeerInfo contains information about a TChannel peer
@@ -127,6 +129,9 @@ type ConnectionOptions struct {
 	// A static set of prefixes to check against the remote process name when
 	// setting up a connection. Check matches with RemoteProcessPrefixMatches().
 	CheckedProcessPrefixes []string
+
+	// DSCP QoS priority name
+	TosPriority string
 }
 
 // connectionEvents are the events that can be triggered by a connection.
@@ -241,6 +246,22 @@ func (ch *Channel) newOutboundConnection(timeout time.Duration, hostPort string,
 			).Info("Outbound net.Dial failed.")
 		}
 		return nil, err
+	}
+
+	opts := &ch.connectionOptions
+	tosPriority := opts.TosPriority
+
+	if tosPriority != "" {
+		dscpInt := GetDSCPFieldInt(tosPriority)
+		if conn.RemoteAddr().(*net.TCPAddr).IP.To16() != nil && conn.RemoteAddr().(*net.TCPAddr).IP.To4() == nil {
+			if err = ipv6.NewConn(conn).SetTrafficClass(dscpInt); err != nil {
+				return nil, err
+			}
+		} else if conn.RemoteAddr().(*net.TCPAddr).IP.To4() != nil {
+			if err = ipv4.NewConn(conn).SetTOS(dscpInt); err != nil {
+				return nil, err
+			}
+		}
 	}
 
 	return ch.newConnection(conn, hostPort, connectionWaitingToSendInitReq, events), nil

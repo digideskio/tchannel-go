@@ -119,6 +119,11 @@ func (o *ChannelOpts) SetFramePool(framePool tchannel.FramePool) *ChannelOpts {
 	return o
 }
 
+func (o *ChannelOpts) SetTosPriority(tosPriority string) *ChannelOpts {
+	o.DefaultConnectionOptions.TosPriority = tosPriority
+	return o
+}
+
 // SetProcessPrefixes sets CheckProcessPrefixes in DefaultConnectionOptions.
 func (o *ChannelOpts) SetProcessPrefixes(prefixes ...string) *ChannelOpts {
 	o.DefaultConnectionOptions.CheckedProcessPrefixes = prefixes
