@@ -59,6 +59,7 @@ func init() {
 	}
 }
 
+// GetTosField returns the integer for a QoS class name
 // tosName can be any Definitions for DiffServ Codepoints
 // as per RFC2474 or described by IP Precedence descriptions:
 // "LOWDELAY", "THROUGHPUT", "RELIABILTIY", "LOWCOST"

@@ -780,7 +780,6 @@ func TestTosPriority(t *testing.T) {
 		ts.Register(raw.Wrap(newTestHandler(t)), "echo")
 		ch2.Register(raw.Wrap(newTestHandler(t)), "echo")
 		outbound, err := ts.Server().BeginCall(ctx, hp2, "s2", "echo", nil)
-		raw.WriteArgs(outbound, []byte("arg2"), []byte("arg3"))
 		require.NoError(t, err)
 		_, outboundNetConn := OutboundConnection(outbound)
 		var wg sync.WaitGroup
@@ -789,9 +788,9 @@ func TestTosPriority(t *testing.T) {
 			defer wg.Done()
 			raw.WriteArgs(call, []byte("arg2"), []byte("arg3"))
 		}(outbound)
+		wg.Wait()
 		connTosPriority, err := IsTosPriority(outboundNetConn, "LOWDELAY")
 		require.NoError(t, err)
 		assert.Equal(t, connTosPriority, true)
-		wg.Wait()
 	})
 }
