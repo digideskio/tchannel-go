@@ -33,6 +33,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/uber/tchannel-go/tos"
 	"github.com/uber/tchannel-go/typed"
 
 	"github.com/uber-go/atomic"
@@ -132,8 +133,8 @@ type ConnectionOptions struct {
 
 	// QoS class name to be marked on outbound connection. Supply a DiffServ
 	// Compliant name, AF11 .. etc,  or "LOWDELAY", "THROUGHPUT", "RELIABILTIY"
-	// or "LOWCOST"
-	TosPriority string
+	// or "LOWCOST" from the tchannel tos package
+	TosPriority tos.ToS
 }
 
 // connectionEvents are the events that can be triggered by a connection.
@@ -253,20 +254,16 @@ func (ch *Channel) newOutboundConnection(timeout time.Duration, hostPort string,
 	opts := &ch.connectionOptions
 	tosPriority := opts.TosPriority
 
-	if tosPriority != "" {
-		tosBit, err := GetTosField(tosPriority)
-		if err != nil {
-			return nil, err
-		}
+	if tosPriority > 0 {
 		// Verify we are using a TCP socket
 		if tcpAddr, ok := conn.RemoteAddr().(*net.TCPAddr); ok {
 			// Handle dual stack listeners and set Traffic Class
 			if tcpAddr.IP.To16() != nil && tcpAddr.IP.To4() == nil {
-				if err = ipv6.NewConn(conn).SetTrafficClass(tosBit); err != nil {
+				if err = ipv6.NewConn(conn).SetTrafficClass(int(tosPriority)); err != nil {
 					return nil, err
 				}
 			} else if tcpAddr.IP.To4() != nil {
-				if err = ipv4.NewConn(conn).SetTOS(tosBit); err != nil {
+				if err = ipv4.NewConn(conn).SetTOS(int(tosPriority)); err != nil {
 					return nil, err
 				}
 			}

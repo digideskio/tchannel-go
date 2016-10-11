@@ -35,6 +35,7 @@ import (
 	"github.com/uber/tchannel-go/relay/relaytest"
 	"github.com/uber/tchannel-go/testutils"
 	"github.com/uber/tchannel-go/testutils/testreader"
+	"github.com/uber/tchannel-go/tos"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -770,8 +771,8 @@ func TestTosPriority(t *testing.T) {
 	ctx, cancel := NewContext(time.Second)
 	defer cancel()
 
-	opts1 := testutils.NewOpts().SetServiceName("s1").SetTosPriority("LOWDELAY").NoRelay()
-	opts2 := testutils.NewOpts().SetServiceName("s2").SetTosPriority("LOWDELAY").NoRelay()
+	opts1 := testutils.NewOpts().SetServiceName("s1").SetTosPriority(tos.LOWDELAY).NoRelay()
+	opts2 := testutils.NewOpts().SetServiceName("s2").NoRelay()
 	testutils.WithTestServer(t, opts1, func(ts *testutils.TestServer) {
 		ch2 := ts.NewServer(opts2)
 		hp2 := ch2.PeerInfo().HostPort
@@ -789,7 +790,7 @@ func TestTosPriority(t *testing.T) {
 			raw.WriteArgs(call, []byte("arg2"), []byte("arg3"))
 		}(outbound)
 		wg.Wait()
-		connTosPriority, err := IsTosPriority(outboundNetConn, "LOWDELAY")
+		connTosPriority, err := IsTosPriority(outboundNetConn, tos.LOWDELAY)
 		require.NoError(t, err)
 		assert.Equal(t, connTosPriority, true)
 	})

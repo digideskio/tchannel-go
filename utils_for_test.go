@@ -27,6 +27,7 @@ import (
 	"net"
 	"time"
 
+	"github.com/uber/tchannel-go/tos"
 	"golang.org/x/net/context"
 	"golang.org/x/net/ipv4"
 	"golang.org/x/net/ipv6"
@@ -75,14 +76,9 @@ func OutboundConnection(call *OutboundCall) (*Connection, net.Conn) {
 }
 
 // Return true if the connection matches the passed DiffServ Name.
-func IsTosPriority(c net.Conn, tosPriority string) (bool, error) {
+func IsTosPriority(c net.Conn, tosPriority tos.ToS) (bool, error) {
 	var connTosPriority int
 	var err error
-
-	tosBit, err := GetTosField(tosPriority)
-	if err != nil {
-		return false, err
-	}
 
 	if c.RemoteAddr().(*net.TCPAddr).IP.To16() != nil && c.RemoteAddr().(*net.TCPAddr).IP.To4() == nil {
 		connTosPriority, err = ipv6.NewConn(c).TrafficClass()
@@ -90,7 +86,7 @@ func IsTosPriority(c net.Conn, tosPriority string) (bool, error) {
 		connTosPriority, err = ipv4.NewConn(c).TOS()
 	}
 
-	return (connTosPriority == tosBit), err
+	return (connTosPriority == int(tosPriority)), err
 }
 
 // InboundConnection returns the underlying connection for an incoming call.

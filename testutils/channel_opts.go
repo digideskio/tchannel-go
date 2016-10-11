@@ -27,6 +27,7 @@ import (
 
 	"github.com/uber/tchannel-go"
 	"github.com/uber/tchannel-go/relay"
+	"github.com/uber/tchannel-go/tos"
 
 	"github.com/uber-go/atomic"
 )
@@ -120,7 +121,7 @@ func (o *ChannelOpts) SetFramePool(framePool tchannel.FramePool) *ChannelOpts {
 }
 
 // SetTosPriority set TosPriority in DefaultConnectionOptions.
-func (o *ChannelOpts) SetTosPriority(tosPriority string) *ChannelOpts {
+func (o *ChannelOpts) SetTosPriority(tosPriority tos.ToS) *ChannelOpts {
 	o.DefaultConnectionOptions.TosPriority = tosPriority
 	return o
 }
