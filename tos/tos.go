@@ -20,35 +20,66 @@
 
 package tos
 
+// ToS represents a const value DF, CS0 etc
 type ToS uint8
 
 const (
-	DF   ToS = 0x00
-	CS0  ToS = 0x00
-	CS1  ToS = 0x08
-	CS2  ToS = 0x10
-	CS3  ToS = 0x18
-	CS4  ToS = 0x20
-	CS5  ToS = 0x28
-	CS6  ToS = 0x30
-	CS7  ToS = 0x38
-	BE   ToS = 0x00
+	// DF Default Forward
+	DF ToS = 0x00
+	// Class Selector (RFC 2474)
+	// CS0 Class Selector 0
+	CS0 ToS = 0x00
+	// CS1 Class Selector 1
+	CS1 ToS = 0x08
+	// CS2 Class Selector 2
+	CS2 ToS = 0x10
+	// CS3 Class Selector 3
+	CS3 ToS = 0x18
+	// CS4 Class Selector 4
+	CS4 ToS = 0x20
+	// CS5 Class Selector 5
+	CS5 ToS = 0x28
+	// CS6 Class Selector 6
+	CS6 ToS = 0x30
+	// CS7 Class Selector 7
+	CS7 ToS = 0x38
+	// BE Best Effort
+	BE ToS = 0x00
+	// Assured Forwarding (x=class, y=drop precedence) (RFC2597)
+	// AF11 Assured Forward 11
 	AF11 ToS = 0x0a
+	// AF12 Assured Forward 11
 	AF12 ToS = 0x0c
+	// AF13 Assured Forward 12
 	AF13 ToS = 0x0e
+	// AF21 Assured Forward 13
 	AF21 ToS = 0x12
+	// AF22 Assured Forward 21
 	AF22 ToS = 0x14
+	// AF23 Assured Forward 22
 	AF23 ToS = 0x16
+	// AF31 Assured Forward 23
 	AF31 ToS = 0x1a
+	// AF32 Assured Forward 31
 	AF32 ToS = 0x1c
+	// AF33 Assured Forward 32
 	AF33 ToS = 0x1e
+	// AF41 Assured Forward 33
 	AF41 ToS = 0x22
+	// AF42 Assured Forward 41
 	AF42 ToS = 0x24
+	// AF43 Assured Forward 42
 	AF43 ToS = 0x26
-	EF   ToS = 0x2e
+	// EF Expedited Forwarding (RFC 3246)
+	EF ToS = 0x2e
 	// IP Precedence (Linux Socket Compat)
-	LOWDELAY    ToS = 0x10
-	THROUGHPUT  ToS = 0x08
+	// RFC 791
+	// LOWDELAY 10
+	LOWDELAY ToS = 0x10
+	// TRHOUGHPUT 8
+	THROUGHPUT ToS = 0x08
+	// RELIABILTIY 4
 	RELIABILITY ToS = 0x04
-	LOWCOST     ToS = 0x02
+	// LOWCOST 2
+	LOWCOST ToS = 0x02
 )
