@@ -119,6 +119,7 @@ func (o *ChannelOpts) SetFramePool(framePool tchannel.FramePool) *ChannelOpts {
 	return o
 }
 
+// SetTosPriority set TosPriority in DefaultConnectionOptions.
 func (o *ChannelOpts) SetTosPriority(tosPriority string) *ChannelOpts {
 	o.DefaultConnectionOptions.TosPriority = tosPriority
 	return o

@@ -23,7 +23,7 @@ package tchannel
 import "errors"
 
 var tosFieldMap map[string]int
-var notRecognizedTosName = errors.New("Unknown Tos Name")
+var errNotRecognizedTosName = errors.New("Unknown Tos Name")
 
 func init() {
 	tosFieldMap = map[string]int{
@@ -59,12 +59,12 @@ func init() {
 	}
 }
 
+// tosName can be any Definitions for DiffServ Codepoints
+// as per RFC2474 or described by IP Precedence descriptions:
+// "LOWDELAY", "THROUGHPUT", "RELIABILTIY", "LOWCOST"
 func GetTosField(tosName string) (int, error) {
-	// tosName can be any Definitions for DiffServ Codepoints
-	// as per RFC2474 or described by IP Precedence descriptions:
-	// "LOWDELAY", "THROUGHPUT", "RELIABILTIY", "LOWCOST"
 	if fieldValue, ok := tosFieldMap[tosName]; ok {
 		return fieldValue, nil
 	}
-	return -1, notRecognizedTosName
+	return -1, errNotRecognizedTosName
 }

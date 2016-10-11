@@ -51,5 +51,5 @@ func TestCSConfigValues(t *testing.T) {
 }
 
 func TestBadTosName(t *testing.T) {
-	assert.Equal(t, makeAsOne(GetTosField("LOL")), makeAsOne(-1, notRecognizedTosName))
+	assert.Equal(t, makeAsOne(GetTosField("LOL")), makeAsOne(-1, errNotRecognizedTosName))
 }

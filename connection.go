@@ -130,7 +130,9 @@ type ConnectionOptions struct {
 	// setting up a connection. Check matches with RemoteProcessPrefixMatches().
 	CheckedProcessPrefixes []string
 
-	// ToS priority name
+	// QoS class name to be marked on outbound connection. Supply a DiffServ
+	// Compliant name, AF11 .. etc,  or "LOWDELAY", "THROUGHPUT", "RELIABILTIY"
+	// or "LOWCOST"
 	TosPriority string
 }
 
