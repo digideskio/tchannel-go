@@ -79,13 +79,18 @@ func IsTosPriority(c net.Conn, tosPriority string) (bool, error) {
 	var connTosPriority int
 	var err error
 
-	dscpInt := GetDSCPFieldInt(tosPriority)
+	tosBit, err := GetTosField(tosPriority)
+	if err != nil {
+		return false, err
+	}
+
 	if c.RemoteAddr().(*net.TCPAddr).IP.To16() != nil && c.RemoteAddr().(*net.TCPAddr).IP.To4() == nil {
 		connTosPriority, err = ipv6.NewConn(c).TrafficClass()
 	} else if c.RemoteAddr().(*net.TCPAddr).IP.To4() != nil {
 		connTosPriority, err = ipv4.NewConn(c).TOS()
 	}
-	return (connTosPriority == dscpInt), err
+
+	return (connTosPriority == tosBit), err
 }
 
 // InboundConnection returns the underlying connection for an incoming call.

@@ -770,8 +770,8 @@ func TestTosPriority(t *testing.T) {
 	ctx, cancel := NewContext(time.Second)
 	defer cancel()
 
-	opts1 := testutils.NewOpts().SetServiceName("s1").SetTosPriority("AF11").NoRelay()
-	opts2 := testutils.NewOpts().SetServiceName("s2").SetTosPriority("AF11").NoRelay()
+	opts1 := testutils.NewOpts().SetServiceName("s1").SetTosPriority("LOWDELAY").NoRelay()
+	opts2 := testutils.NewOpts().SetServiceName("s2").SetTosPriority("LOWDELAY").NoRelay()
 	testutils.WithTestServer(t, opts1, func(ts *testutils.TestServer) {
 		ch2 := ts.NewServer(opts2)
 		hp2 := ch2.PeerInfo().HostPort
@@ -789,7 +789,7 @@ func TestTosPriority(t *testing.T) {
 			defer wg.Done()
 			raw.WriteArgs(call, []byte("arg2"), []byte("arg3"))
 		}(outbound)
-		connTosPriority, err := IsTosPriority(outboundNetConn, "AF11")
+		connTosPriority, err := IsTosPriority(outboundNetConn, "LOWDELAY")
 		require.NoError(t, err)
 		assert.Equal(t, connTosPriority, true)
 		wg.Wait()

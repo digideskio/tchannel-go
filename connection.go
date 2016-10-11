@@ -130,7 +130,7 @@ type ConnectionOptions struct {
 	// setting up a connection. Check matches with RemoteProcessPrefixMatches().
 	CheckedProcessPrefixes []string
 
-	// DSCP QoS priority name
+	// ToS priority name
 	TosPriority string
 }
 
@@ -252,14 +252,21 @@ func (ch *Channel) newOutboundConnection(timeout time.Duration, hostPort string,
 	tosPriority := opts.TosPriority
 
 	if tosPriority != "" {
-		dscpInt := GetDSCPFieldInt(tosPriority)
-		if conn.RemoteAddr().(*net.TCPAddr).IP.To16() != nil && conn.RemoteAddr().(*net.TCPAddr).IP.To4() == nil {
-			if err = ipv6.NewConn(conn).SetTrafficClass(dscpInt); err != nil {
-				return nil, err
-			}
-		} else if conn.RemoteAddr().(*net.TCPAddr).IP.To4() != nil {
-			if err = ipv4.NewConn(conn).SetTOS(dscpInt); err != nil {
-				return nil, err
+		tosBit, err := GetTosField(tosPriority)
+		if err != nil {
+			return nil, err
+		}
+		// Verify we are using a TCP socket
+		if tcpAddr, ok := conn.RemoteAddr().(*net.TCPAddr); ok {
+			// Handle dual stack listeners and set Traffic Class
+			if tcpAddr.IP.To16() != nil && tcpAddr.IP.To4() == nil {
+				if err = ipv6.NewConn(conn).SetTrafficClass(tosBit); err != nil {
+					return nil, err
+				}
+			} else if tcpAddr.IP.To4() != nil {
+				if err = ipv4.NewConn(conn).SetTOS(tosBit); err != nil {
+					return nil, err
+				}
 			}
 		}
 	}
