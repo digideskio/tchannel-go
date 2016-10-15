@@ -771,30 +771,18 @@ func TestTosPriority(t *testing.T) {
 	ctx, cancel := NewContext(time.Second)
 	defer cancel()
 
-	opts1 := testutils.NewOpts().SetServiceName("s1").SetTosPriority(tos.LOWDELAY).NoRelay()
-	opts2 := testutils.NewOpts().SetServiceName("s2").NoRelay()
-	testutils.WithTestServer(t, opts1, func(ts *testutils.TestServer) {
-		ch2 := ts.NewServer(opts2)
-		hp2 := ch2.PeerInfo().HostPort
-		defer ch2.Close()
-
+	opts := testutils.NewOpts().SetServiceName("s1").SetTosPriority(tos.Lowcost)
+	testutils.WithTestServer(t, opts, func(ts *testutils.TestServer) {
 		ts.Register(raw.Wrap(newTestHandler(t)), "echo")
-		ch2.Register(raw.Wrap(newTestHandler(t)), "echo")
 
-		outbound, err := ts.Server().BeginCall(ctx, hp2, "s2", "echo", nil)
-		require.NoError(t, err)
+		outbound, err := ts.Server().BeginCall(ctx, ts.HostPort(), "s1", "echo", nil)
+		require.NoError(t, err, "BeginCall failed")
 
 		_, outboundNetConn := OutboundConnection(outbound)
-		var wg sync.WaitGroup
-		wg.Add(1)
-		go func(call *OutboundCall) {
-			defer wg.Done()
-			_, _, _, err := raw.WriteArgs(call, []byte("arg2"), []byte("arg3"))
-			require.NoError(t, err)
-		}(outbound)
-		wg.Wait()
-		connTosPriority, err := IsTosPriority(outboundNetConn, tos.LOWDELAY)
-		require.NoError(t, err)
+		connTosPriority, err := IsTosPriority(outboundNetConn, tos.Lowcost)
+		require.NoError(t, err, "Checking TOS priority failed")
 		assert.Equal(t, connTosPriority, true)
+		_, _, _, err = raw.WriteArgs(outbound, []byte("arg2"), []byte("arg3"))
+		require.NoError(t, err, "Failed to write to outbound conn")
 	})
 }

@@ -73,12 +73,12 @@ const (
 	AF43 ToS = 0x26
 	// EF Expedited Forwarding (RFC 3246)
 	EF ToS = 0x2e
-	// LOWDELAY 10
-	LOWDELAY ToS = 0x10
-	// THROUGHPUT 8
-	THROUGHPUT ToS = 0x08
-	// RELIABILITY  4
-	RELIABILITY ToS = 0x04
-	// LOWCOST 2
-	LOWCOST ToS = 0x02
+	// Lowdelay 10
+	Lowdelay ToS = 0x10
+	// Throughput 8
+	Throughput ToS = 0x08
+	// reliability  4
+	Reliability ToS = 0x04
+	// lowcost 2
+	Lowcost ToS = 0x02
 )

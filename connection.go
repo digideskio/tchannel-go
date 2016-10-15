@@ -131,9 +131,10 @@ type ConnectionOptions struct {
 	// setting up a connection. Check matches with RemoteProcessPrefixMatches().
 	CheckedProcessPrefixes []string
 
-	// QoS class name to be marked on outbound connection. Supply a DiffServ
-	// Compliant name, AF11 .. etc,  or "LOWDELAY", "THROUGHPUT", "RELIABILTIY"
-	// or "LOWCOST" from the tchannel tos package
+	// ToS class name marked on outbound connection. Supply a DiffServ
+	// compliant name, tos.AF11 tos.CS1 .. etc,
+	// tos.Lowdelay, tos.Throughput, tos.Reliabiltiy or tos.Lowcost
+	// from the tchannel tos package
 	TosPriority tos.ToS
 }
 
@@ -252,25 +253,30 @@ func (ch *Channel) newOutboundConnection(timeout time.Duration, hostPort string,
 	}
 
 	opts := &ch.connectionOptions
-	tosPriority := opts.TosPriority
-
-	if tosPriority > 0 {
-		// Verify we are using a TCP socket
-		if tcpAddr, ok := conn.RemoteAddr().(*net.TCPAddr); ok {
-			// Handle dual stack listeners and set Traffic Class
-			if tcpAddr.IP.To16() != nil && tcpAddr.IP.To4() == nil {
-				if err = ipv6.NewConn(conn).SetTrafficClass(int(tosPriority)); err != nil {
-					return nil, err
-				}
-			} else if tcpAddr.IP.To4() != nil {
-				if err = ipv4.NewConn(conn).SetTOS(int(tosPriority)); err != nil {
-					return nil, err
-				}
-			}
+	if tosPriority := opts.TosPriority; tosPriority > 0 {
+		if err := ch.setConnectionTosPriority(tosPriority, conn); err != nil {
+			return nil, err
 		}
 	}
 
 	return ch.newConnection(conn, hostPort, connectionWaitingToSendInitReq, events), nil
+}
+
+func (ch *Channel) setConnectionTosPriority(tosPriority tos.ToS, c net.Conn) error {
+	// Verify we are using a TCP socket
+	if tcpAddr, ok := c.RemoteAddr().(*net.TCPAddr); ok {
+		// Handle dual stack listeners and set Traffic Class
+		if tcpAddr.IP.To16() != nil && tcpAddr.IP.To4() == nil {
+			if err := ipv6.NewConn(c).SetTrafficClass(int(tosPriority)); err != nil {
+				return err
+			}
+		} else if tcpAddr.IP.To4() != nil {
+			if err := ipv4.NewConn(c).SetTOS(int(tosPriority)); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 // Creates a new Connection based on an incoming connection from a peer
