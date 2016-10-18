@@ -20,21 +20,16 @@
 
 package tos
 
-// ToS represents a const value DF, CS0 etc
-// Class Selector (RFC 2474)
+// ToS represents a const value DF, CS3 etc
 // Assured Forwarding (x=class, y=drop precedence) (RFC2597)
+// Class Selector (RFC 2474)
 // IP Precedence (Linux Socket Compat RFC 791
 type ToS uint8
 
+// Assured Forwarding (x=class, y=drop precedence) (RFC2597)
+// Class Selector (RFC 2474)
+
 const (
-	// DF Default Forward
-	DF ToS = 0x00
-	// CS0 Class Selector 0
-	CS0 ToS = 0x00
-	// CS1 Class Selector 1
-	CS1 ToS = 0x08
-	// CS2 Class Selector 2
-	CS2 ToS = 0x10
 	// CS3 Class Selector 3
 	CS3 ToS = 0x18
 	// CS4 Class Selector 4
@@ -45,8 +40,6 @@ const (
 	CS6 ToS = 0x30
 	// CS7 Class Selector 7
 	CS7 ToS = 0x38
-	// BE Best Effort
-	BE ToS = 0x00
 	// AF11 Assured Forward 11
 	AF11 ToS = 0x0a
 	// AF12 Assured Forward 11

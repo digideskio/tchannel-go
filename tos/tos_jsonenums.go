@@ -9,16 +9,11 @@ import (
 
 var (
 	_ToSNameToValue = map[string]ToS{
-		"DF":          DF,
-		"CS0":         CS0,
-		"CS1":         CS1,
-		"CS2":         CS2,
 		"CS3":         CS3,
 		"CS4":         CS4,
 		"CS5":         CS5,
 		"CS6":         CS6,
 		"CS7":         CS7,
-		"BE":          BE,
 		"AF11":        AF11,
 		"AF12":        AF12,
 		"AF13":        AF13,
@@ -39,16 +34,11 @@ var (
 	}
 
 	_ToSValueToName = map[ToS]string{
-		DF:          "DF",
-		CS0:         "CS0",
-		CS1:         "CS1",
-		CS2:         "CS2",
 		CS3:         "CS3",
 		CS4:         "CS4",
 		CS5:         "CS5",
 		CS6:         "CS6",
 		CS7:         "CS7",
-		BE:          "BE",
 		AF11:        "AF11",
 		AF12:        "AF12",
 		AF13:        "AF13",
@@ -73,16 +63,11 @@ func init() {
 	var v ToS
 	if _, ok := interface{}(v).(fmt.Stringer); ok {
 		_ToSNameToValue = map[string]ToS{
-			interface{}(DF).(fmt.Stringer).String():          DF,
-			interface{}(CS0).(fmt.Stringer).String():         CS0,
-			interface{}(CS1).(fmt.Stringer).String():         CS1,
-			interface{}(CS2).(fmt.Stringer).String():         CS2,
 			interface{}(CS3).(fmt.Stringer).String():         CS3,
 			interface{}(CS4).(fmt.Stringer).String():         CS4,
 			interface{}(CS5).(fmt.Stringer).String():         CS5,
 			interface{}(CS6).(fmt.Stringer).String():         CS6,
 			interface{}(CS7).(fmt.Stringer).String():         CS7,
-			interface{}(BE).(fmt.Stringer).String():          BE,
 			interface{}(AF11).(fmt.Stringer).String():        AF11,
 			interface{}(AF12).(fmt.Stringer).String():        AF12,
 			interface{}(AF13).(fmt.Stringer).String():        AF13,
