@@ -771,7 +771,7 @@ func TestTosPriority(t *testing.T) {
 	ctx, cancel := NewContext(time.Second)
 	defer cancel()
 
-	opts := testutils.NewOpts().SetServiceName("s1").SetTosPriority(tos.Lowcost)
+	opts := testutils.NewOpts().SetServiceName("s1").SetTosPriority(tos.Lowdelay)
 	testutils.WithTestServer(t, opts, func(ts *testutils.TestServer) {
 		ts.Register(raw.Wrap(newTestHandler(t)), "echo")
 
@@ -779,7 +779,7 @@ func TestTosPriority(t *testing.T) {
 		require.NoError(t, err, "BeginCall failed")
 
 		_, outboundNetConn := OutboundConnection(outbound)
-		connTosPriority, err := IsTosPriority(outboundNetConn, tos.Lowcost)
+		connTosPriority, err := IsTosPriority(outboundNetConn, tos.Lowdelay)
 		require.NoError(t, err, "Checking TOS priority failed")
 		assert.Equal(t, connTosPriority, true)
 		_, _, _, err = raw.WriteArgs(outbound, []byte("arg2"), []byte("arg3"))
