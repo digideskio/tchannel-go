@@ -70,8 +70,8 @@ const (
 	Lowdelay ToS = 0x10
 	// Throughput 8
 	Throughput ToS = 0x08
-	// reliability  4
+	// Reliability  4
 	Reliability ToS = 0x04
-	// lowcost 2
+	// Lowcost 2
 	Lowcost ToS = 0x02
 )
