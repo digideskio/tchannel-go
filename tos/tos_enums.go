@@ -37,10 +37,12 @@ func init() {
 	}
 }
 
+// MarshalText implements TextMarshaler from encoding
 func (r ToS) MarshalText() ([]byte, error) {
 	return []byte(_tosValueToName[r]), nil
 }
 
+// UnmarshalText implements TextUnMarshaler from encoding
 func (r *ToS) UnmarshalText(data []byte) error {
 	v, ok := _tosNameToValue[string(data)]
 	if !ok {
